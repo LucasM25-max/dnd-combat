@@ -1,8 +1,8 @@
-# ASTRA
+# Fable
 
 *(working title — repo name `dnd-combat`)*
 
-**A 3D voxel D&D RPG platform containing multiple playable campaigns of different structures, powered by one faithful 5e rules engine, alongside a standalone Endless Dungeon mode.**
+**A 3D voxel D&D RPG platform containing multiple playable campaigns of different structures, powered by one faithful 5e rules engine, alongside a standalone Endless Mode.**
 
 This README is the living design document.
 
@@ -10,14 +10,14 @@ This README is the living design document.
 
 ## 1. The Concept
 
-ASTRA is not "a D&D RPG with an idle mode attached." It is a platform:
+Fable is not "a D&D RPG with an idle mode attached." It is a platform:
 
 ```text
-                         ASTRA
+                         FABLE
                            │
              ┌─────────────┴─────────────┐
              │                           │
-        CAMPAIGNS                  ENDLESS DUNGEON
+       STORY MODE                  ENDLESS MODE
              │                           │
       ┌──────┼──────┐                    │
       │      │      │                    │
@@ -35,8 +35,8 @@ ASTRA is not "a D&D RPG with an idle mode attached." It is a platform:
                       rules, items, abilities
 ```
 
-- **Campaigns** — a library of authored adventures, each free to have its own structure, cast, setting, tone and degree of player freedom. *The Fouled Stream* is the self-contained tutorial, **not** the template every future campaign must follow.
-- **The Endless Dungeon** — a standalone, always-running idle mode in the Idle Champions mold, with its own economy and prestige loop. Complete as a game on its own.
+- **Story Mode** — a library of authored campaigns, each free to have its own structure, cast, setting, tone and degree of player freedom. The **Tutorial Campaign** is five linked adventures running levels 1 to 7; it is self-contained, and **not** the template every future campaign must follow.
+- **Endless Mode** — a standalone, always-running idle mode in the Idle Champions mold, with its own economy and prestige loop. Complete as a game on its own.
 - **One faithful 5e rules engine** underneath everything. Same dice, same stat blocks, same maths, whether you're playing a tactical boss fight or watching wave 300 resolve at max speed.
 
 The guiding principle:
@@ -46,16 +46,16 @@ The guiding principle:
 ### Top-level menu
 
 ```text
-CAMPAIGNS
-  The Fouled Stream — Tutorial
+STORY MODE
+  The Tutorial Campaign  (5 adventures, levels 1-7)
   Campaign 1
   Campaign 2
   ...
 
-THE ENDLESS DUNGEON
+ENDLESS MODE
 ```
 
-"Story Mode" is retired as a term — an open-world quest-heavy campaign is still a story experience. The division is **Campaigns vs. Endless Dungeon**.
+The two modes are **Story Mode** (the campaign library) and **Endless Mode** (the idle lane).
 
 ---
 
@@ -72,7 +72,7 @@ THE ENDLESS DUNGEON
 
 ### Architecture principles
 - **Four clean layers: rules → content → campaign structure → presentation.** This separation was valuable when the plan was one adventure; with a campaign library it is essential.
-- The rules engine is **pure and headless** so it can run in a Web Worker, in unit tests, and at high speed for the Endless Dungeon.
+- The rules engine is **pure and headless** so it can run in a Web Worker, in unit tests, and at high speed for Endless Mode.
 - **Deterministic reducer + seeded RNG** → reproducible fights, verifiable saves, fast-forwarded idle catch-up.
 - **Everything is data.** Abilities, creatures, items, dialogue, quests and whole campaigns live in JSON, not code. This is the decision that makes a campaign library possible at all.
 - **One ruleset, one engine, never two combat systems.**
@@ -190,7 +190,7 @@ Essential once campaigns differ wildly: a campaign that hands out a powerful swo
 - Imported characters allowed?
 - Imported equipment allowed?
 - Difficulty scaling
-- Whether Endless Dungeon upgrades apply
+- Whether Endless Mode upgrades apply
 
 This supports both *"take your existing hero into this campaign"* and *"this is a curated experience; everyone starts from scratch"* on one shared engine.
 
@@ -286,20 +286,39 @@ Progression within a campaign is straight 5e levelling, bounded by that campaign
 
 ---
 
-## 8. The Tutorial Campaign — The Fouled Stream
+## 8. The Tutorial Campaign
 
-**Self-contained.** A custom level-1 adventure whose job is to teach the systems and tell one complete small story. It is not chapter one of a longer saga, and it does not set the structural template for the campaign library.
+**Self-contained, five adventures, levels 1 to 7.** The Tutorial Campaign is a complete arc that teaches every system in the engine by introducing one new pillar per adventure. It ends; it does not lead into Campaign 1, and it does not set the structural template for the campaign library.
 
-- **Customisation Level:** Fixed
-- **Freedom profile:** Railroaded
-- **Party:** solo
-- **Progression rules:** fresh start, no imports, no Endless Dungeon upgrades applied
+- **Customisation Level:** Fixed for Adventure 1, loosening to **Guided** from Adventure 2 onward as companions and level-ups arrive
+- **Freedom profile:** Railroaded at the start, drifting to Semi-open by Adventure 4
+- **Progression rules:** fresh start, no imports, no Endless Mode upgrades applied
+
+### The arc at a glance
+
+| # | Adventure | Level | Party | New pillar it teaches |
+|---|---|---|---|---|
+| 1 | **The Fouled Stream** | 1 | Solo (Garrick) | Core loop: exploration, dialogue, grid combat, conditions |
+| 2 | **Miner Difficulties** | 2 | +1 companion | Dungeon crawling, random encounters, hazards, a monster you can resolve without killing |
+| 3 | **The Winged God** | 3 | Full party of 4 | Escort, faction attitude, moral choice, first real boss |
+| 4 | **Horns of the Beast** | 5 | 4 | Overland travel, journey stages, betrayal, artifacts and curses |
+| 5 | **Boreal Ball** | 7 | 4 | Social encounters as a full system: Renown, attitudes, a party where combat is the interruption |
+
+Level gaps (3 → 5 → 7) are intentional. Between adventures the party is in **downtime** — which is where Endless Mode, shopping and companion scenes live for players who want them, and where a simple "time passes, you level" transition serves players who don't.
+
+### Companions
+
+The solo-Fighter rule applies **only to Adventure 1**. Adventure 2 pairs Garrick with one companion (Cleric — slots, healing, concentration); Adventure 3 fills the party to four (adding Rogue and Wizard). By Adventure 5, all four have authored relationships with each other and with the campaign's NPCs. Each is **Guided**: authored identity, player-chosen subclass, feats and spells.
+
+---
+
+### Adventure 1 — The Fouled Stream *(Level 1, solo)*
 
 **Situation.** An alien fungus in a cave is polluting the stream that flows past the village of High Ery; the fungus has spawned vile creatures in and around the cave.
 
 High Ery itself is **backstory, not a level** — Garrick comes from there, but the game opens at the First Fork. Encounter order is faithful to the outline: **Fork → Borogrove → Blights → Cave**.
 
-### Scene 1 — The First Fork (exploration, no combat)
+#### Scene 1 — The First Fork (exploration, no combat)
 
 **Purpose:** teach movement, interaction and ability checks. Target 5–7 minutes.
 
@@ -319,7 +338,7 @@ High Ery itself is **backstory, not a level** — Garrick comes from there, but 
 
 **Exit.** No fight here, so the scene ends on atmosphere: mist thickening, birdsong stopping, the sense of being watched as Garrick follows the tributary south. He reads it as "something's afraid of me." It's Borogrove, watching.
 
-### Scene 2 — Journey Upstream (dialogue)
+#### Scene 2 — Journey Upstream (dialogue)
 
 Borogrove, a kindly Treant who keeps watch over the wood, steps out of what Garrick took for a tree. The dialogue-system showcase, and the first real test of the interactive-story goal.
 
@@ -329,11 +348,11 @@ Borogrove, a kindly Treant who keeps watch over the wood, steps out of what Garr
 - Optional **Insight DC 12** to notice Borogrove is frightened, not merely concerned — the corruption is spreading faster than he admits.
 - Teaches: dialogue UI, NPC relationships, receiving and inspecting an item, consumables in inventory.
 
-### Scene 3 — Twig Blights (first combat)
+#### Scene 3 — Twig Blights (first combat)
 
 Just outside the cave mouth. The stream spills from a dark cave in a rock face; deadwood litters the approach. The grid converts in place.
 
-- **Three blights, not six.** Six is a party encounter; three is a tense solo one. Each dies to one longsword hit, so the lesson is action economy: Garrick can only kill one per turn, so he *will* take hits. (The six-blight version survives as an Endless Dungeon wave.)
+- **Three blights, not six.** Six is a party encounter; three is a tense solo one. Each dies to one longsword hit, so the lesson is action economy: Garrick can only kill one per turn, so he *will* take hits. (The six-blight version survives as an Endless Mode wave.)
 - **Teaching order, matched to the fight's own rhythm:**
   1. Turn one — move and attack.
   2. Turn two — they surround him; the UI surfaces **Sap** on the longsword.
@@ -344,7 +363,7 @@ Just outside the cave mouth. The stream spills from a dark cave in a rock face; 
 - Borogrove's acorn is already in inventory — the correct safety net for a lone level-1 Fighter, and a lesson in item use under pressure.
 - Losing should be survivable: death saves, then a narrative failure state (he wakes bruised by the ford, mocked by his own inner monologue) rather than a reload screen.
 
-### Remaining encounters
+#### Remaining encounters
 
 - **Corrupted Cave** — the Underdark Warren map, trimmed: ignore the secret door and inner chambers; close the south, east and north tunnels. Enter from the southeast following the stream.
 - **Entrance** — a Shrieker Fungus alerts the cave. Four Bullywug Warriors with fungal growths respond. Teaches approach choice (stealth vs. noise), the alert mechanic, and conditions.
@@ -356,9 +375,107 @@ Just outside the cave mouth. The stream spills from a dark cave in a rock face; 
 
 ---
 
-## 9. The Endless Dungeon
+### Adventure 2 — Miner Difficulties *(Level 2, +1 companion)*
 
-**A first-class, standalone mode.** Not downtime, not a side-system, not campaign-gated. A player who never opens a campaign should be able to launch the game, go to the Endless Dungeon, and have a complete, satisfying loop.
+**Situation.** Miners outside the village of Blackstone dug into an Underdark tunnel and a Hook Horror found its way in, then got trapped when the hole collapsed behind it. It has eaten a few miners. The rest won't go back down.
+
+**Hook.** Mayor Kristryd Splitanvil, a Lawful Good dwarf, hires the party on the strength of their work at the Fouled Stream — the first time the campaign acknowledges the player's own history. She offers a topaz worth 500 GP for killing or driving off the creature.
+
+**New systems this adventure introduces:**
+- **Dungeon crawling** — a multi-level map with real navigation, rather than a linear scene chain. The Mine map, three levels, player-chosen route.
+- **The random encounter table** — rolled on entering each distinct area. This is the engine's first *procedural* content and a direct feeder into Endless Mode's wave generator; build them on the same spawner.
+  - 1: four Violet Fungi + one Rust Monster — teaches equipment loss as a threat
+  - 2: one Giant Spider + two Swarms of Insects — teaches swarms and area damage
+  - 3: one Darkmantle + three Piercers — teaches ambush from above and darkness
+  - 4: yellow mold on a miner's remains — teaches environmental hazards
+  - 5: one Gelatinous Cube — teaches engulf, and that some fights should be avoided
+  - 6: Sounds of Terror — the tracking encounter
+- **Hazards as first-class map objects** (yellow mold, unstable rubble, darkness and light sources).
+- **A stalking antagonist.** "Sounds of Terror" fires twice: the first roll is only clacking echoes and gouged walls; the second is the Hook Horror itself. It is hungry but what it actually wants is to get home, and it **retreats from a fight going badly** — teaching fleeing enemies and morale.
+- **The non-violent solution, escalated.** The Underdark connection in the southeast of the bottom level is rubble-choked. Clear it and the hook horror hears its kin, hurries past the party and leaves forever. Bonus 200 XP each. A whole dungeon resolved without the boss fight — a much bigger version of the Berserk Bear lesson.
+
+**Why it's second:** it proves procedural encounters, dungeon navigation and the AI's retreat behaviour, all of which Endless Mode needs.
+
+---
+
+### Adventure 3 — The Winged God *(Level 3, full party of four)*
+
+**Situation.** A Red Dragon Wyrmling drove a band of kobolds out of their warren and claimed it as a lair. The displaced kobolds are raiding merchants in the Cairn Hills, hoping the dragon will accept them back as servants.
+
+**Hook.** Nondy Barducks, a Lawful Neutral gnome merchant, hires the party to escort his wagon to the mining village of Diamond Lake. 150 GP each.
+
+**New systems:**
+- **Escort and travel-with-an-objective** — a moving protectee with its own HP and an AI that panics.
+- **Creature attitude as a mechanic** (Hostile / Indifferent / Friendly) and the ability to shift it through play.
+- **A branching structure with no wrong answer:**
+  - *Kobold Bandits* — eight Kobold Warriors surround the wagon shouting "For the Winged God!" If four fall, the rest flee. A captured kobold explains everything.
+  - *Pursue them* → **Kobold Camp**, where they refuse to fight and beg for help.
+  - *Carry on* → **Kobold Supplicants**, where twelve Kobold Warriors and six Winged Kobolds approach humbly with the same offer: drive off the dragon and they'll return Nondy's stolen goods.
+  - Either route reaches the same place. The player's choice colours *how* — the campaign's first real demonstration that branching isn't about locking content away.
+- **The moral turn.** The enemies from the opening fight become the quest-givers. Teaches that attitude is changeable and violence is one option among several.
+- **The first true boss.** The Volcanic Caves, cut small: four Magma Mephits and three Smoke Mephits at the entrance, then the Red Dragon Wyrmling on its hoard — Nondy's crate (400 GP), 4,200 CP / 2,000 SP / 180 GP, seven 50 GP gems, a Potion of Healing, a Rope of Climbing, and Spell Scrolls of Alarm and Comprehend Languages. Bonus 400 XP each for defeating **or driving off** the dragon.
+- **Legendary-adjacent combat design:** breath weapon recharge, flight, a lair that fights back. The first encounter that genuinely needs four characters and justifies the full formation UI.
+
+---
+
+### Adventure 4 — Horns of the Beast *(Level 5)*
+
+**Situation.** A forgotten ruin in the Amedio Jungle holds a fiendish artifact, the Horns of the Beast. A villain intends to claim it.
+
+**Hook.** Melchis, an unassuming human merchant — secretly a Chaotic Evil Fiend Cultist devoted to Iuz — hires the party to escort an expedition to a lost jungle temple. 2,000 GP in trade bars, half on arrival, half on safe return, plus his "limited magical ability."
+
+**New systems:**
+- **Overland travel as a structured journey** in three stages, with pace, supplies and per-day encounter rolls. This is the biggest new subsystem in the campaign and the foundation for any future open or semi-open campaign.
+  - **Stage 1 — Sea.** Passage across Jeklea Bay at ~1½ hexes a day, ambushed near the end by two Sahuagin Priests, six Sahuagin Warriors and a Water Elemental. Teaches: ship maps, aquatic combat, an NPC crew that stays out of the way.
+  - **Stage 2 — Jungle.** ~180 miles, a d20 roll per day: mostly nothing (1–14), then a territorial Giant Ape, a hunting Tyrannosaurus Rex, three Allosauruses, two Ankylosauruses, an Indifferent band of jungle humans, or four Minotaurs of Baphomet hunting captives for the temple. Teaches: attitude-driven encounters where fleeing, talking or avoiding are all valid.
+  - **Stage 3 — Lakeshore.** 90 miles of coast. Day two brings heavy rain obscuring vision and quicksand pits; the front rank may sink while two Giant Crocodiles attack. Teaches: weather, terrain hazards and split-party crisis management.
+- **A travelling NPC with a hidden agenda.** Melchis accompanies the party for the whole adventure. The dialogue system needs long-arc NPC state and foreshadowing the player can catch (or miss) — the single strongest argument for having built the relationship-flag system properly back at Borogrove.
+- **The ruins.** The western half of the Dungeon Hideout ground floor, stairs ignored. Six Minotaurs of Baphomet, spread out, converging on the sound of combat — teaches dynamic reinforcement and sound propagation.
+- **Artifacts and curses.** The Horns rest on a pedestal in the northwest. Melchis grabs for them and, if he succeeds, transforms into a Hezrou and attacks. A character who dons them suffers Demonic Possession, removable only by Remove Curse. Searching Melchis yields a Bag of Holding with twelve 250 GP trade bars and a Spell Scroll of Teleportation Circle with a sigil sequence.
+- **Knowledge as a reward:** casting Identify reveals the Horns can only be destroyed in the River Oceanus, in the Upper Planes. A deliberate loose thread the campaign never resolves.
+- Bonus 1,000 XP each.
+
+---
+
+### Adventure 5 — Boreal Ball *(Level 7)*
+
+**Situation.** The Baron of the Boreal Ball, a minor Feywild noble, holds an unending ball in his ice palace. Beneath the revelry run schemes and intrigues.
+
+**Hook.** A magical invitation arrives and teleports the party to the ball at the appointed hour.
+
+**New systems:**
+- **Social encounters as a full mechanical system**, structurally parallel to combat. Three dances; each dance, every character chooses an activity — dance, mingle, observe, scheme — and can earn **up to 1 Renown per character per dance** by making a positive impression.
+- **Renown as a visible score** driving the adventure's outcome, exactly as HP drives a fight. The campaign's climax is a number you raise by talking.
+- **A cast with attitudes that move:**
+  - **Cannifer**, a Satyr Revelmaster, Hostile — used to being the centre of attention.
+  - **Daris**, a Friendly fun-loving Dryad who wants to be seen dancing with everyone.
+  - **Fidget**, an Indifferent Pixie, pranks all evening and harms nobody.
+  - **Granny Snailtongue**, a Hostile Green Hag who helps at every turn purely to put the party in her debt — teaches that a Friendly-looking offer is not a safe one.
+  - **Raxas Albrethin**, an arrogant Chaotic Neutral drow Mage, Hostile, wants the party humiliated — but flips to Friendly once Renown reaches 6.
+- **Combat as the interruption, not the point.** After the second dance, Varka — a Neutral Evil Hobgoblin Warlord — bursts in with a Hobgoblin Captain and five Hobgoblin Warriors, offended by the party's presence. Defeating them grants +2 Renown. A level 7 party in ballroom clothes: teaches that the social scene and the tactical grid are the same world.
+- **Conclusion.** The Baron appears after the third dance. At Renown 6 or more, each character receives a **Charm of the Boreal Ball** — one casting of Ice Knife at level 3, then it vanishes. Bonus 1,700 XP each.
+- **Why it ends here:** the campaign closes on the opposite of how it opened. Adventure 1 was a lone over-confident fighter swinging a sword at a twig. Adventure 5 is four accomplished adventurers who win by being charming. Garrick's arc, mechanically expressed.
+
+---
+
+### Content and licensing note
+
+> These five adventures are adapted from the 2024 *Dungeon Master's Guide* adventure outlines (pp. 122–125). **They are not SRD content.** The SRD 5.2.1 covers the rules, and many but not all of the creatures.
+>
+> Before anything ships publicly, every adventure needs a pass to:
+> - Replace non-SRD creatures (Hook Horror, Darkmantle, Piercer, Rust Monster, Minotaur of Baphomet, Satyr Revelmaster, Sahuagin Priest, and others may not be present) with SRD equivalents or original statblocks.
+> - Rewrite all situations, hooks, NPCs and place names as original prose. Greyhawk specifics — Iuz, the Flanaess, the Cairn Hills, Diamond Lake, the Amedio Jungle, Jeklea Bay — must be replaced with our own setting.
+> - Keep the *structure* (which is not copyrightable) and discard the *expression* (which is).
+>
+> Treat the current text as a design scaffold, not shippable content. Tracked as the top open question.
+
+---
+
+---
+
+## 9. Endless Mode
+
+**A first-class, standalone mode.** Not downtime, not a side-system, not campaign-gated. A player who never opens a campaign should be able to launch the game, go to Endless Mode, and have a complete, satisfying loop.
 
 ### The view: side-scrolling lane
 - **Persistent side-view panel.** Party formation on the left; enemies stream in from the right down a continuous 3D voxel lane. Always visible while the mode is active — not a menu, not a log, not a send-and-check-back system.
@@ -398,17 +515,19 @@ Just outside the cave mouth. The stream spills from a dark cave in a rock face; 
 ### Relationship to campaigns
 Flexible, and deliberately non-coercive in both directions.
 
-- **Campaigns can provide** the Endless Dungeon with characters, equipment, abilities, areas, special enemies and gambits.
-- **The Endless Dungeon provides** gold, Renown, generic progression and long-term optimisation.
-- **Never required.** A player must never need to grind the Endless Dungeon to enjoy a campaign. Campaigns stay balanced as RPG experiences in their own right.
-- **Never gatekept.** The Endless Dungeon is fully playable without touching a campaign; campaign unlocks are shortcuts, not keys.
-- **The campaign progression rules decide** whether imported characters, imported gear and Endless Dungeon upgrades apply at all. A curated campaign can switch all of it off.
+- **Campaigns can provide** Endless Mode with characters, equipment, abilities, areas, special enemies and gambits.
+- **Endless Mode provides** gold, Renown, generic progression and long-term optimisation.
+- **Never required.** A player must never need to grind Endless Mode to enjoy a campaign. Campaigns stay balanced as RPG experiences in their own right.
+- **Never gatekept.** Endless Mode is fully playable without touching a campaign; campaign unlocks are shortcuts, not keys.
+- **The campaign progression rules decide** whether imported characters, imported gear and Endless Mode upgrades apply at all. A curated campaign can switch all of it off.
 
 ---
 
 ## 10. Build Order
 
-Priority is unchanged at the top: **play the tutorial first, then the Endless Dungeon.** The campaign framework is generalised out of working code rather than designed in a vacuum.
+Priority is unchanged at the top: **play the tutorial first, then Endless Mode.** The campaign framework is generalised out of working code rather than designed in a vacuum.
+
+The Tutorial Campaign is now five adventures and roughly 15 hours of content, so it is no longer a single milestone. It is interleaved: ship the opening, ship Endless Mode, then grow the tutorial adventure by adventure as each new pillar gets built.
 
 ### Milestone 1 — Playable tutorial opening
 1. **Rules engine core**, scoped to what the opening needs: d20 rolls, advantage/disadvantage, ability checks vs. DC, attack rolls, AC, damage, HP, initiative, conditions scaffold. Unit-tested.
@@ -420,7 +539,10 @@ Priority is unchanged at the top: **play the tutorial first, then the Endless Du
 
 > Build these as **generic systems with the tutorial as their first consumer** — scene loader, dialogue graph, check resolver, encounter runner. Nothing Fouled-Stream-specific belongs in code.
 
-### Milestone 2 — The Endless Dungeon
+### Milestone 2 — Finish Adventure 1
+Corrupted Cave, Shrieker and Bullywugs, Berserk Bear, Ooze's Lair, Journey Home. *The Fouled Stream* complete, start to finish, as a playable self-contained adventure.
+
+### Milestone 3 — Endless Mode
 1. Continuous wave spawner + auto-resolve loop on the 5e engine.
 2. Side-view voxel renderer: party left, enemies streaming right.
 3. Gold economy + one upgrade path (gear).
@@ -428,24 +550,33 @@ Priority is unchanged at the top: **play the tutorial first, then the Endless Du
 5. Prestige loop.
 6. Additional areas, formation slots, gambit upgrades.
 
-### Milestone 3 — Finish the tutorial campaign
-Corrupted Cave, Shrieker and Bullywugs, Berserk Bear, Ooze's Lair, Journey Home. The Fouled Stream ships complete and self-contained.
+> The wave spawner here and the random encounter table in Adventure 2 are the same system. Build it once, in this milestone, with Endless Mode as the first consumer.
 
 ### Milestone 4 — The campaign framework
-Generalise everything built so far into `packages/campaign`:
-- Campaign loading and the campaign library menu
-- World state, quests, factions, flags, branching
+Required before Adventure 2, because that is where companions, levelling and multi-adventure state begin. Generalise into `packages/campaign`:
+- Campaign loading, multi-adventure arcs, and the Story Mode library menu
+- World state, quests, factions, flags, branching, cross-adventure history (Kristryd must be able to reference the Fouled Stream)
 - Character definitions and **player-directed character customisation** (Fixed / Guided / Flexible / Full)
 - The personality system, generalised from Garrick's Reckless
-- Campaign progression rules and the balance layer
-- Freedom profiles and campaign-defined party composition
-- Companions, formation and roster management
+- Campaign progression rules, the balance layer, downtime between adventures
+- Companions, party formation and roster management
+- Levelling past 1, through to 7
 
-### Milestone 5 — The first full campaign
-A non-tutorial campaign with a different structure — semi-open, a Guided or Flexible protagonist, a recruited party, higher level cap. This is the real proof of the platform.
+### Milestone 5 — Adventures 2 and 3
+- **Miner Difficulties** — dungeon navigation, procedural encounter tables, hazards, morale and retreating enemies.
+- **The Winged God** — escort AI, creature attitude system, branching-to-the-same-place structure, the first real boss with flight and a breath weapon.
 
-### Milestone 6 — Content pipeline
-In-browser campaign and encounter editor, so campaigns seven onward need no engineering time.
+### Milestone 6 — Adventure 4
+**Horns of the Beast** — the overland travel system in three stages, per-day encounter rolls, weather and terrain hazards, long-arc NPC state and betrayal, artifacts and curses. The largest single subsystem in the campaign, and the groundwork for any semi-open campaign later.
+
+### Milestone 7 — Adventure 5
+**Boreal Ball** — social encounters as a full mechanical system, the Renown score, shifting attitudes, charms and supernatural gifts. Tutorial Campaign complete.
+
+### Milestone 8 — The first post-tutorial campaign
+A non-tutorial campaign with a different structure — semi-open, a Guided or Flexible protagonist, a recruited party, higher level cap. The real proof of the platform.
+
+### Milestone 9 — Content pipeline
+In-browser campaign and encounter editor, so later campaigns need no engineering time.
 
 ---
 
@@ -453,22 +584,26 @@ In-browser campaign and encounter editor, so campaigns seven onward need no engi
 
 | Question | Decision |
 |---|---|
+| Name | **Fable** (working title) |
 | Platform | Web only |
 | Rules | Direct 5e adaptation, SRD 5.2.1 base |
-| Shape of the game | A campaign library + the Endless Dungeon, on one shared engine |
-| Tutorial | The Fouled Stream — self-contained, railroaded, solo, Fixed character |
-| Tutorial protagonist | Garrick Vell, premade human Fighter, Reckless |
+| The two modes | **Story Mode** (campaign library) and **Endless Mode** (idle lane) |
+| Tutorial | A five-adventure self-contained campaign, levels 1 to 7 |
+| Tutorial protagonist | Garrick Vell, premade human Fighter, Reckless, Fixed |
+| Tutorial party | Solo in Adventure 1; +1 in Adventure 2; four from Adventure 3 |
 | Later campaigns | Authored identity, player-chosen build; customisation level per campaign |
 | Party size | A campaign design choice, not a global rule |
 | Movement | Grid in combat, free movement in exploration |
 | Multiplayer | No |
-| Endless Dungeon | First-class continuous lane, gold-driven, standalone, never mandatory |
+| Endless Mode | First-class continuous lane, gold-driven, standalone, never mandatory |
 | Cross-mode carryover | Governed by each campaign's progression rules |
 
 ## 12. Open Questions
 
-- Confirm Twig Blight and Treant are present in SRD 5.2.1; substitute or rebuild if not.
-- Exact XP and gold curves for Endless Dungeon scaling.
-- Setting of the first full campaign, and its freedom profile.
+- **Licensing pass on all five adventures** (see the note in section 8). The single biggest outstanding item: non-SRD creatures must be substituted or rebuilt, and all prose, NPCs and Greyhawk place names replaced with original material.
+- Confirm which creatures in the arc actually exist in SRD 5.2.1 — Twig Blight, Treant, Hook Horror, Darkmantle, Piercer, Rust Monster, Minotaur of Baphomet, Satyr Revelmaster, Sahuagin, Red Dragon Wyrmling, Hobgoblin Warlord, Green Hag, Pixie, Dryad.
+- Our own setting: Fable needs a world to replace Greyhawk, defined before Adventure 4's travel map.
+- Identity of the three companions, and how much of their build the player controls.
+- Exact XP and gold curves for Endless Mode scaling.
 - How far character appearance customisation goes in voxel art.
 - Art budget and asset pipeline ownership.
