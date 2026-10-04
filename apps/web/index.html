@@ -1,0 +1,22 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Fable — The First Fork</title>
+    <style>
+      html, body { margin: 0; height: 100%; background: #0d1210; overflow: hidden; }
+      #app { display: block; width: 100vw; height: 100vh; }
+      #loading {
+        position: fixed; inset: 0; display: grid; place-items: center;
+        color: #cdd8cf; font: 300 15px/1.4 ui-sans-serif, system-ui, sans-serif;
+        letter-spacing: .14em; text-transform: uppercase; background: #0d1210;
+      }
+    </style>
+  </head>
+  <body>
+    <canvas id="app"></canvas>
+    <div id="loading">Building the wood…</div>
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>
