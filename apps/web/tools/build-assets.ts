@@ -1,4 +1,4 @@
-import { mkdirSync, writeFileSync, rmSync } from 'node:fs'
+import { mkdirSync, writeFileSync, readdirSync, unlinkSync, existsSync } from 'node:fs'
 import { join } from 'node:path'
 import { VoxelVolume } from '../src/voxel'
 import { encodeVox } from '../src/vox-format'
@@ -19,8 +19,14 @@ import { HERO_VOX, SX, SY, SZ, SceneManifest, WATER_LEVEL, WORLD_VOX } from '../
  */
 
 const OUT = join(import.meta.dirname, '..', 'public', 'assets')
-rmSync(OUT, { recursive: true, force: true })
+// Clear the files in place rather than removing the directory: Vite's dev
+// server watches this folder by inode and stops serving it if it disappears.
 mkdirSync(OUT, { recursive: true })
+if (existsSync(OUT)) {
+  for (const f of readdirSync(OUT)) {
+    if (f.endsWith('.vox') || f === 'scene.json' || f === 'heights.bin') unlinkSync(join(OUT, f))
+  }
+}
 
 let totalBytes = 0
 function write(name: string, v: VoxelVolume, hollow = true) {
