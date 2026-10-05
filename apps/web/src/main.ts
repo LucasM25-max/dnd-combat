@@ -6,7 +6,7 @@ import { UnrealBloomPass } from 'three/examples/jsm/postprocessing/UnrealBloomPa
 import { OutputPass } from 'three/examples/jsm/postprocessing/OutputPass.js'
 import { SMAAPass } from 'three/examples/jsm/postprocessing/SMAAPass.js'
 import { loadScene } from './scene-loader'
-import { makeWater } from './water'
+import { Water } from './water'
 import { WORLD_VOX } from './gen/common'
 
 /**
@@ -77,8 +77,9 @@ const loaded = await loadScene('/assets', { terrain: terrainMat, prop: propMat, 
 scene.add(loaded.group)
 
 const bounds = loaded.manifest.bounds
-const water = makeWater()
-scene.add(water)
+const water = new Water(loaded.heights, SUN_DIR)
+water.setSize(window.innerWidth, window.innerHeight, renderer.getPixelRatio())
+scene.add(water.mesh)
 
 const garrick = loaded.hero
 const garrickSpot = loaded.heroPosition
@@ -210,15 +211,16 @@ function onResize() {
   camera.updateProjectionMatrix()
   renderer.setSize(window.innerWidth, window.innerHeight)
   composer.setSize(window.innerWidth, window.innerHeight)
+  water.setSize(window.innerWidth, window.innerHeight, renderer.getPixelRatio())
 }
 window.addEventListener('resize', onResize)
 
-const waterMat = water.material as THREE.ShaderMaterial
+
 const motes = (scene.userData as any).motes as THREE.Points
 
 function tick() {
   const t = clock.getElapsedTime()
-  waterMat.uniforms.uTime.value = t
+  water.update(t)
 
   for (let i = 0; i < mistLayers.length; i++) {
     const m = mistLayers[i].material as THREE.MeshBasicMaterial
@@ -240,6 +242,9 @@ function tick() {
   garrick.position.y = garrickSpot.y + Math.sin(t * 1.1) * 0.006
 
   controls.update()
+  // Render the scene once without the water so the surface has something to
+  // refract, then draw everything including the water.
+  water.captureBackdrop(renderer, scene, camera)
   composer.render()
   requestAnimationFrame(tick)
 }

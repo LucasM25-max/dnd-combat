@@ -13,6 +13,7 @@ import type { SceneManifest } from './gen/common'
 
 export interface LoadedScene {
   group: THREE.Group
+  heights: Int16Array
   hero: THREE.Mesh
   heroPosition: THREE.Vector3
   manifest: SceneManifest
@@ -35,6 +36,10 @@ export async function loadScene(
   const group = new THREE.Group()
   let triangles = 0
   let drawCalls = 0
+
+  // ---- heightfield (used by the water shader) -----------------------------
+  const hfBuf = await (await fetch(`${base}/${manifest.heightfield.file}`)).arrayBuffer()
+  const heights = new Int16Array(hfBuf)
 
   // ---- terrain ------------------------------------------------------------
   for (const chunk of manifest.terrainChunks) {
@@ -115,5 +120,5 @@ export async function loadScene(
   hero.rotation.y = manifest.hero.rotation
   group.add(hero)
 
-  return { group, hero, heroPosition, manifest, stats: { triangles: Math.round(triangles), drawCalls } }
+  return { group, heights, hero, heroPosition, manifest, stats: { triangles: Math.round(triangles), drawCalls } }
 }

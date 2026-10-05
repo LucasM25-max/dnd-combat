@@ -34,6 +34,11 @@
       "z": 180
     }
   ],
+  "heightfield": {
+    "file": "heights.bin",
+    "sx": 460,
+    "sz": 360
+  },
   "models": {
     "birch_0": "birch_0.vox",
     "birch_1": "birch_1.vox",

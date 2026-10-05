@@ -82,6 +82,12 @@ for (let cz = 0; cz < SZ; cz += CD) {
 
 const { placements, hero } = buildPlacements(heights)
 
+// Terrain heightfield, written for the water shader: it needs to know the
+// depth of the water at every point to shade absorption, foam and flow.
+const heightBytes = new Uint8Array(heights.buffer.slice(0))
+writeFileSync(join(OUT, 'heights.bin'), heightBytes)
+console.log(`  ${'heights.bin'.padEnd(26)} ${SX}x${SZ} Int16   ${(heightBytes.length / 1024).toFixed(0).padStart(5)} KB`)
+
 const manifest: SceneManifest = {
   name: 'The First Fork',
   worldVoxel: WORLD_VOX,
@@ -89,6 +95,7 @@ const manifest: SceneManifest = {
   waterLevel: WATER_LEVEL,
   bounds: { sx: SX, sy: SY, sz: SZ },
   terrainChunks,
+  heightfield: { file: 'heights.bin', sx: SX, sz: SZ },
   models,
   placements,
   hero: {

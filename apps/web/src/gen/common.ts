@@ -42,6 +42,7 @@ export interface SceneManifest {
   waterLevel: number
   bounds: { sx: number; sy: number; sz: number }
   terrainChunks: Array<{ file: string; x: number; y: number; z: number }>
+  heightfield: { file: string; sx: number; sz: number }
   models: Record<string, string>
   placements: Placement[]
   hero: { model: string; x: number; y: number; z: number; rotation: number }
