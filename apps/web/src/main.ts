@@ -6,7 +6,7 @@ import { UnrealBloomPass } from 'three/examples/jsm/postprocessing/UnrealBloomPa
 import { OutputPass } from 'three/examples/jsm/postprocessing/OutputPass.js'
 import { SMAAPass } from 'three/examples/jsm/postprocessing/SMAAPass.js'
 import { loadScene } from './scene-loader'
-import { Water } from './water'
+import { Water, WATER_Y } from './water'
 import { WORLD_VOX } from './gen/common'
 
 /**
@@ -77,8 +77,34 @@ const loaded = await loadScene('/assets', { terrain: terrainMat, prop: propMat, 
 scene.add(loaded.group)
 
 const bounds = loaded.manifest.bounds
-const water = new Water(loaded.heights, SUN_DIR)
+const water = new Water(
+  loaded.heights, SUN_DIR,
+  (scene.fog as THREE.FogExp2).color, (scene.fog as THREE.FogExp2).density,
+)
 water.setSize(window.innerWidth, window.innerHeight, renderer.getPixelRatio())
+water.setCamera(camera)
+
+// Wet, darkened ground around the waterline — the shoreline should look damp,
+// not like a plane intersecting dry grass.
+const WET_LINE = WATER_Y + 0.05
+terrainMat.onBeforeCompile = (shader) => {
+  shader.uniforms.uWetLine = { value: WET_LINE }
+  shader.vertexShader = 'varying float vWY;\n' + shader.vertexShader.replace(
+    '#include <begin_vertex>',
+    '#include <begin_vertex>\n  vWY = (modelMatrix * vec4(transformed, 1.0)).y;',
+  )
+  shader.fragmentShader = 'varying float vWY;\nuniform float uWetLine;\n' + shader.fragmentShader.replace(
+    '#include <color_fragment>',
+    `#include <color_fragment>
+     float wet = 1.0 - smoothstep(0.0, 0.26, vWY - uWetLine);
+     diffuseColor.rgb *= mix(1.0, 0.44, wet);
+     diffuseColor.rgb = mix(diffuseColor.rgb, diffuseColor.rgb * vec3(0.86, 0.96, 0.92), wet * 0.6);`,
+  ).replace(
+    '#include <roughnessmap_fragment>',
+    `#include <roughnessmap_fragment>
+     roughnessFactor *= mix(1.0, 0.35, 1.0 - smoothstep(0.0, 0.26, vWY - uWetLine));`,
+  )
+}
 scene.add(water.mesh)
 
 const garrick = loaded.hero
