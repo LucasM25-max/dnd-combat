@@ -17,7 +17,7 @@ export function tribX(z: number): number {
 
 /** Half-width of the tributary channel at a given z. */
 export function tribW(z: number): number {
-  return 15 + noise2(z * 0.03, 2.1) * 7
+  return 10 + noise2(z * 0.03, 2.1) * 4
 }
 
 /** Where the main river's south bank sits, per x. */

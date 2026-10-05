@@ -37,18 +37,20 @@ export function buildTerrain(): { volume: VoxelVolume; heights: Int16Array } {
 
       const bank = riverBankZ(x)
       if (z > bank) {
-        const t = Math.min(1, (z - bank) / 26)
-        h = h * (1 - t) + (26 + fbm(x * 0.05, 9, 2) * 3) * t
+        const t = Math.min(1, (z - bank) / 12)
+        h = h * (1 - t) + (25 + fbm(x * 0.05, 9, 2) * 2.5) * t
       }
 
       const cx = tribX(z)
       const w = tribW(z)
       const d = Math.abs(x - cx)
-      if (d < w + 12 && z < bank + 14) {
-        const t = Math.max(0, 1 - Math.max(0, d - w) / 12)
-        const floor = 28 + fbm(z * 0.08, 3, 2) * 2
-        const cut = d < w ? 1 : t * 0.8
-        h = h * (1 - cut) + floor * cut
+      if (d < w + 14) {
+        // The stream bed falls gently northward and merges into the river bed.
+        const mergeT = Math.min(1, Math.max(0, (z - (bank - 10)) / 22))
+        const floor = (30 - (z / SZ) * 2 + fbm(z * 0.08, 3, 2) * 2) * (1 - mergeT) + 25 * mergeT
+        const t = Math.max(0, 1 - Math.max(0, d - w) / 14)
+        const cut = d < w ? 1 : t * 0.85
+        h = Math.min(h, h * (1 - cut) + floor * cut)
       }
       heights[z * SX + x] = Math.round(h)
     }
@@ -187,12 +189,17 @@ export function buildPlacements(heights: Int16Array): {
   }
 
   // --- the fallen birch crossing -------------------------------------------
+  // Placements are centred on the model, so this is the middle of the span:
+  // the log straddles the channel with both ends resting on the banks.
   {
     const z = 128
-    const cx = tribX(z)
-    const x = Math.round(cx - (tribW(z) + 20))
-    const y = Math.max(groundAt(x, z), groundAt(x + 60, z)) - 10
-    out.push({ model: 'fallen_birch', x, y, z, rot: 0 })
+    const cx = Math.round(tribX(z))
+    const half = 38 // half the log's length, in world voxels
+    const bankL = groundAt(cx - half + 4, z)
+    const bankR = groundAt(cx + half - 4, z)
+    // Sit the trunk just above the higher bank so it clearly bridges the water.
+    const y = Math.max(bankL, bankR) - 4
+    out.push({ model: 'fallen_birch', x: cx, y, z, rot: 0 })
   }
 
   return { placements: out, hero: { x: heroX, y: groundAt(heroX, heroZ) + 1, z: heroZ } }
