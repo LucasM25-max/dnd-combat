@@ -35,15 +35,44 @@ export interface Placement {
   rot: number
 }
 
+export interface SceneLight {
+  x: number
+  y: number
+  z: number
+  color: number
+  intensity: number
+  distance: number
+  /** 0 = steady, 1 = full firelight flicker */
+  flicker: number
+  shadow?: boolean
+}
+
+export interface Actor {
+  model: string
+  x: number
+  y: number
+  z: number
+  /** radians about Y */
+  rotation: number
+  /** hero voxel scale rather than world scale */
+  fine?: boolean
+}
+
 export interface SceneManifest {
   name: string
   worldVoxel: number
   heroVoxel: number
-  waterLevel: number
+  waterLevel?: number
   bounds: { sx: number; sy: number; sz: number }
   terrainChunks: Array<{ file: string; x: number; y: number; z: number }>
-  heightfield: { file: string; sx: number; sz: number }
+  heightfield?: { file: string; sx: number; sz: number }
   models: Record<string, string>
   placements: Placement[]
-  hero: { model: string; x: number; y: number; z: number; rotation: number }
+  hero?: { model: string; x: number; y: number; z: number; rotation: number }
+  actors?: Actor[]
+  lights?: SceneLight[]
+  camera?: {
+    position: [number, number, number]
+    target: [number, number, number]
+  }
 }

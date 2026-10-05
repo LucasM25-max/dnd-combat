@@ -13,9 +13,10 @@ import type { SceneManifest } from './gen/common'
 
 export interface LoadedScene {
   group: THREE.Group
-  heights: Int16Array
-  hero: THREE.Mesh
-  heroPosition: THREE.Vector3
+  heights: Int16Array | null
+  hero: THREE.Mesh | null
+  heroPosition: THREE.Vector3 | null
+  actors: THREE.Mesh[]
   manifest: SceneManifest
   stats: { triangles: number; drawCalls: number }
 }
@@ -37,9 +38,12 @@ export async function loadScene(
   let triangles = 0
   let drawCalls = 0
 
-  // ---- heightfield (used by the water shader) -----------------------------
-  const hfBuf = await (await fetch(`${base}/${manifest.heightfield.file}`)).arrayBuffer()
-  const heights = new Int16Array(hfBuf)
+  // ---- heightfield (used by the water shader, when a scene has water) -----
+  let heights: Int16Array | null = null
+  if (manifest.heightfield) {
+    const hfBuf = await (await fetch(`${base}/${manifest.heightfield.file}`)).arrayBuffer()
+    heights = new Int16Array(hfBuf)
+  }
 
   // ---- terrain ------------------------------------------------------------
   for (const chunk of manifest.terrainChunks) {
@@ -97,6 +101,36 @@ export async function loadScene(
     drawCalls++
   }
 
+  // ---- actors (characters placed individually, not instanced) -------------
+  const actors: THREE.Mesh[] = []
+  const actorGeo = new Map<string, THREE.BufferGeometry>()
+  for (const a of manifest.actors ?? []) {
+    let geo = actorGeo.get(a.model)
+    if (!geo) {
+      onProgress?.(a.model)
+      const model = await fetchVox(`${base}/${a.model}`)
+      const scale = a.fine === false ? V : manifest.heroVoxel
+      const vol = VoxelVolume.fromVox(model, scale)
+      geo = vol.build({ shade: 0.2 })
+      geo.translate((-model.sx / 2) * scale, 0, (-model.sz / 2) * scale)
+      actorGeo.set(a.model, geo)
+      triangles += geo.getAttribute('position').count / 3
+      drawCalls++
+    }
+    const mesh = new THREE.Mesh(geo, materials.hero)
+    mesh.castShadow = true
+    mesh.receiveShadow = true
+    mesh.position.set(a.x * V, a.y * V, a.z * V)
+    mesh.rotation.y = a.rotation
+    group.add(mesh)
+    actors.push(mesh)
+  }
+
+  if (!manifest.hero) {
+    return { group, heights, hero: null, heroPosition: null, actors, manifest,
+      stats: { triangles: Math.round(triangles), drawCalls } }
+  }
+
   // ---- hero ---------------------------------------------------------------
   onProgress?.('garrick')
   const heroModel = await fetchVox(`${base}/${manifest.hero.model}`)
@@ -120,5 +154,5 @@ export async function loadScene(
   hero.rotation.y = manifest.hero.rotation
   group.add(hero)
 
-  return { group, heights, hero, heroPosition, manifest, stats: { triangles: Math.round(triangles), drawCalls } }
+  return { group, heights, hero, heroPosition, actors, manifest, stats: { triangles: Math.round(triangles), drawCalls } }
 }

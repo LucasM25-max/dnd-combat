@@ -7,7 +7,8 @@
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",
-    "assets": "esbuild tools/build-assets.ts --bundle --platform=node --format=esm --outfile=tools/.build-assets.mjs --log-level=warning && node tools/.build-assets.mjs"
+    "assets": "esbuild tools/build-assets.ts --bundle --platform=node --format=esm --outfile=tools/.build-assets.mjs --log-level=warning && node tools/.build-assets.mjs",
+    "lair": "esbuild tools/build-all.ts --bundle --platform=node --format=esm --outfile=tools/.build-all.mjs --log-level=warning && node tools/.build-all.mjs"
   },
   "keywords": [],
   "author": "",
