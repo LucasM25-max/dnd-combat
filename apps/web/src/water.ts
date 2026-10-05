@@ -152,13 +152,13 @@ const COMMON = /* glsl */`
   float surfaceLevel(vec2 p) {
     float toRiver = clamp(p.y / uRiverBankZ, 0.0, 1.0);
     float fall = (1.0 - toRiver);
-    float level = uWaterY + 0.165 * pow(fall, 1.25);
+    float level = uWaterY + 0.120 * pow(fall, 1.2);
 
     // Riffle steps: short pools separated by small drops.
     float steps = floor(fall * 5.0);
-    level += steps * 0.012;
+    level += steps * 0.007;
     float edge = fract(fall * 5.0);
-    level -= smoothstep(0.0, 0.35, edge) * 0.010;
+    level -= smoothstep(0.0, 0.35, edge) * 0.006;
 
     // The river is slightly lower still and almost flat.
     level -= smoothstep(uRiverBankZ - 0.5, uRiverBankZ + 3.0, p.y) * 0.03;
@@ -177,7 +177,7 @@ const COMMON = /* glsl */`
 
   float flowSpeed(vec2 p) {
     float c = waterColumn(p);
-    return mix(0.10, 0.70, smoothstep(0.03, 0.35, c) * (1.0 - smoothstep(0.9, 2.4, c)));
+    return mix(0.07, 0.42, smoothstep(0.03, 0.35, c) * (1.0 - smoothstep(0.9, 2.4, c)));
   }
 
   // Steepness of the bed: where the stream trips over its own bottom.
@@ -230,10 +230,10 @@ const VERT = /* glsl */`
 
     // Travelling waves — bigger and longer than before, so the surface has
     // real relief rather than a shimmer.
-    disp += gerstner(xz, fd,                                0.30 * amp, 3.1,  t * spd * 1.5, tangent, binormal);
-    disp += gerstner(xz, normalize(fd + vec2(0.55, -0.40)), 0.24 * amp, 1.55, t * spd * 2.0, tangent, binormal);
-    disp += gerstner(xz, normalize(fd + vec2(-0.45, 0.65)), 0.17 * amp, 0.85, t * spd * 2.6, tangent, binormal);
-    disp += gerstner(xz, normalize(fd * 0.3 + vec2(1.0, 0.25)), 0.11 * amp, 0.42, t * 2.4, tangent, binormal);
+    disp += gerstner(xz, fd,                                0.085 * amp, 4.2,  t * spd * 1.1, tangent, binormal);
+    disp += gerstner(xz, normalize(fd + vec2(0.55, -0.40)), 0.060 * amp, 2.30, t * spd * 1.4, tangent, binormal);
+    disp += gerstner(xz, normalize(fd + vec2(-0.45, 0.65)), 0.038 * amp, 1.25, t * spd * 1.8, tangent, binormal);
+    disp += gerstner(xz, normalize(fd * 0.3 + vec2(1.0, 0.25)), 0.022 * amp, 0.62, t * 1.5, tangent, binormal);
 
     // Standing waves: fast shallow flow over a steep bed humps up and stays
     // put. These are stationary in world space, which is what makes moving
@@ -243,7 +243,7 @@ const VERT = /* glsl */`
                    * (1.0 - smoothstep(0.35, 0.9, column)) * smoothstep(0.2, 0.5, spd);
     vStanding = standing;
     float hump = sin(xz.x * 7.0) * cos(xz.y * 8.0) * 0.5 + 0.5;
-    disp.y += standing * (0.055 * hump + 0.016 * sin(xz.x * 31.0 + t * 9.0) * cos(xz.y * 27.0 - t * 7.0));
+    disp.y += standing * (0.020 * hump + 0.005 * sin(xz.x * 31.0 + t * 9.0) * cos(xz.y * 27.0 - t * 7.0));
 
     // Build the surface: sloping waterline plus displacement.
     vec3 worldPos = vec3(p.x + disp.x, surfaceLevel(xz) + disp.y, p.z + disp.z);
@@ -294,11 +294,11 @@ const FRAG = /* glsl */`
     vec2 drift = fd * spd * t;
 
     // Fine ripples riding the big waves.
-    float n1 = fbm(xz * 3.4 - drift);
-    float n2 = fbm(xz * 10.0 - drift * 1.8 + 11.3);
-    float n3 = fbm(xz * 26.0 - drift * 3.1);
-    vec3 N = normalize(vNormal + vec3((n2 - n1) * 0.7 + (n3 - 0.5) * 0.25, 0.0,
-                                      (n1 - n2) * 0.7 + (n3 - 0.5) * 0.25));
+    float n1 = fbm(xz * 2.6 - drift);
+    float n2 = fbm(xz * 7.0 - drift * 1.5 + 11.3);
+    float n3 = fbm(xz * 18.0 - drift * 2.2);
+    vec3 N = normalize(vNormal + vec3((n2 - n1) * 0.22 + (n3 - 0.5) * 0.07, 0.0,
+                                      (n1 - n2) * 0.22 + (n3 - 0.5) * 0.07));
 
     vec3 V = normalize(cameraPosition - vWorld);
     vec3 L = normalize(uSun);
@@ -339,10 +339,10 @@ const FRAG = /* glsl */`
     col = mix(col, uScum, film * 0.8);
 
     // ---- white water --------------------------------------------------------
-    float churn = smoothstep(0.42, 0.85, fbm(xz * 7.5 - drift * 3.2 + vec2(0.0, t * 0.7)));
-    float foam = vStanding * (0.55 + 0.45 * churn);
+    float churn = smoothstep(0.5, 0.9, fbm(xz * 6.0 - drift * 2.2 + vec2(0.0, t * 0.5)));
+    float foam = vStanding * (0.25 + 0.4 * churn);
     // Foam lace at the waterline, and in the slack behind obstacles.
-    float edge = (1.0 - smoothstep(0.0, 0.085, vColumn)) * smoothstep(0.28, 0.72, fbm(xz * 12.0 - drift * 2.4));
+    float edge = (1.0 - smoothstep(0.0, 0.07, vColumn)) * smoothstep(0.38, 0.8, fbm(xz * 9.0 - drift * 1.8)) * 0.7;
     foam = clamp(foam + edge, 0.0, 1.0);
     col = mix(col, uFoam, foam * 0.9);
 
@@ -352,7 +352,7 @@ const FRAG = /* glsl */`
 
     vec3 H = normalize(L + V);
     col += uSunColor * pow(max(dot(N, H), 0.0), 240.0) * 2.6 * (1.0 - foam * 0.8) * (1.0 - film * 0.5);
-    col += uSunColor * pow(max(0.0, fbm(xz * 30.0 - drift * 5.5)), 7.0) * 1.3 * (1.0 - film);
+    col += uSunColor * pow(max(0.0, fbm(xz * 20.0 - drift * 3.5)), 8.0) * 0.8 * (1.0 - film);
 
     // ---- soft shoreline ------------------------------------------------------
     // Fade out over the last few centimetres of thickness so there is no hard
