@@ -1,0 +1,1124 @@
+{
+  "name": "The First Fork",
+  "worldVoxel": 0.04,
+  "heroVoxel": 0.02,
+  "waterLevel": 34,
+  "bounds": {
+    "sx": 460,
+    "sy": 130,
+    "sz": 360
+  },
+  "terrainChunks": [
+    {
+      "file": "terrain_0_0.vox",
+      "x": 0,
+      "y": 0,
+      "z": 0
+    },
+    {
+      "file": "terrain_230_0.vox",
+      "x": 230,
+      "y": 0,
+      "z": 0
+    },
+    {
+      "file": "terrain_0_180.vox",
+      "x": 0,
+      "y": 0,
+      "z": 180
+    },
+    {
+      "file": "terrain_230_180.vox",
+      "x": 230,
+      "y": 0,
+      "z": 180
+    }
+  ],
+  "models": {
+    "birch_0": "birch_0.vox",
+    "birch_1": "birch_1.vox",
+    "birch_2": "birch_2.vox",
+    "birch_3": "birch_3.vox",
+    "birch_sick_0": "birch_sick_0.vox",
+    "birch_sick_1": "birch_sick_1.vox",
+    "shelf_0": "shelf_0.vox",
+    "shelf_1": "shelf_1.vox",
+    "shelf_2": "shelf_2.vox",
+    "deadwood_0": "deadwood_0.vox",
+    "deadwood_1": "deadwood_1.vox",
+    "deadwood_2": "deadwood_2.vox",
+    "rock_0": "rock_0.vox",
+    "rock_1": "rock_1.vox",
+    "rock_2": "rock_2.vox",
+    "reeds_0": "reeds_0.vox",
+    "reeds_1": "reeds_1.vox",
+    "reeds_2": "reeds_2.vox",
+    "fallen_birch": "fallen_birch.vox"
+  },
+  "placements": [
+    {
+      "model": "birch_3",
+      "x": 175,
+      "y": 52,
+      "z": 107,
+      "rot": 1
+    },
+    {
+      "model": "birch_3",
+      "x": 286,
+      "y": 49,
+      "z": 237,
+      "rot": 3
+    },
+    {
+      "model": "birch_0",
+      "x": 165,
+      "y": 51,
+      "z": 129,
+      "rot": 0
+    },
+    {
+      "model": "birch_1",
+      "x": 81,
+      "y": 51,
+      "z": 24,
+      "rot": 1
+    },
+    {
+      "model": "birch_2",
+      "x": 459,
+      "y": 51,
+      "z": 237,
+      "rot": 0
+    },
+    {
+      "model": "birch_0",
+      "x": 414,
+      "y": 50,
+      "z": 199,
+      "rot": 2
+    },
+    {
+      "model": "birch_2",
+      "x": 429,
+      "y": 46,
+      "z": 259,
+      "rot": 1
+    },
+    {
+      "model": "birch_3",
+      "x": 361,
+      "y": 46,
+      "z": 241,
+      "rot": 3
+    },
+    {
+      "model": "birch_0",
+      "x": 433,
+      "y": 53,
+      "z": 186,
+      "rot": 3
+    },
+    {
+      "model": "birch_0",
+      "x": 283,
+      "y": 48,
+      "z": 211,
+      "rot": 1
+    },
+    {
+      "model": "birch_1",
+      "x": 294,
+      "y": 54,
+      "z": 71,
+      "rot": 2
+    },
+    {
+      "model": "birch_1",
+      "x": 332,
+      "y": 48,
+      "z": 245,
+      "rot": 1
+    },
+    {
+      "model": "birch_0",
+      "x": 52,
+      "y": 48,
+      "z": 81,
+      "rot": 0
+    },
+    {
+      "model": "birch_1",
+      "x": 297,
+      "y": 49,
+      "z": 175,
+      "rot": 1
+    },
+    {
+      "model": "birch_1",
+      "x": 344,
+      "y": 53,
+      "z": 115,
+      "rot": 2
+    },
+    {
+      "model": "birch_3",
+      "x": 394,
+      "y": 52,
+      "z": 14,
+      "rot": 3
+    },
+    {
+      "model": "birch_1",
+      "x": 254,
+      "y": 54,
+      "z": 22,
+      "rot": 3
+    },
+    {
+      "model": "birch_2",
+      "x": 60,
+      "y": 48,
+      "z": 236,
+      "rot": 2
+    },
+    {
+      "model": "birch_sick_1",
+      "x": 142,
+      "y": 54,
+      "z": 0,
+      "rot": 1
+    },
+    {
+      "model": "birch_2",
+      "x": 276,
+      "y": 49,
+      "z": 247,
+      "rot": 2
+    },
+    {
+      "model": "birch_3",
+      "x": 70,
+      "y": 47,
+      "z": 241,
+      "rot": 1
+    },
+    {
+      "model": "birch_sick_1",
+      "x": 168,
+      "y": 52,
+      "z": 154,
+      "rot": 0
+    },
+    {
+      "model": "birch_0",
+      "x": 304,
+      "y": 48,
+      "z": 241,
+      "rot": 0
+    },
+    {
+      "model": "birch_0",
+      "x": 432,
+      "y": 52,
+      "z": 5,
+      "rot": 3
+    },
+    {
+      "model": "birch_2",
+      "x": 429,
+      "y": 50,
+      "z": 204,
+      "rot": 1
+    },
+    {
+      "model": "birch_0",
+      "x": 418,
+      "y": 52,
+      "z": 174,
+      "rot": 2
+    },
+    {
+      "model": "birch_2",
+      "x": 129,
+      "y": 50,
+      "z": 128,
+      "rot": 3
+    },
+    {
+      "model": "birch_2",
+      "x": 366,
+      "y": 46,
+      "z": 270,
+      "rot": 2
+    },
+    {
+      "model": "birch_1",
+      "x": 82,
+      "y": 46,
+      "z": 248,
+      "rot": 3
+    },
+    {
+      "model": "birch_3",
+      "x": 263,
+      "y": 48,
+      "z": 226,
+      "rot": 2
+    },
+    {
+      "model": "birch_0",
+      "x": 284,
+      "y": 55,
+      "z": 37,
+      "rot": 0
+    },
+    {
+      "model": "birch_0",
+      "x": 100,
+      "y": 50,
+      "z": 47,
+      "rot": 0
+    },
+    {
+      "model": "birch_1",
+      "x": 163,
+      "y": 52,
+      "z": 105,
+      "rot": 3
+    },
+    {
+      "model": "birch_1",
+      "x": 56,
+      "y": 48,
+      "z": 245,
+      "rot": 2
+    },
+    {
+      "model": "birch_0",
+      "x": 21,
+      "y": 47,
+      "z": 222,
+      "rot": 1
+    },
+    {
+      "model": "birch_0",
+      "x": 373,
+      "y": 54,
+      "z": 72,
+      "rot": 2
+    },
+    {
+      "model": "birch_3",
+      "x": 24,
+      "y": 47,
+      "z": 222,
+      "rot": 0
+    },
+    {
+      "model": "birch_2",
+      "x": 316,
+      "y": 48,
+      "z": 256,
+      "rot": 2
+    },
+    {
+      "model": "birch_0",
+      "x": 454,
+      "y": 52,
+      "z": 184,
+      "rot": 0
+    },
+    {
+      "model": "birch_2",
+      "x": 459,
+      "y": 54,
+      "z": 22,
+      "rot": 3
+    },
+    {
+      "model": "birch_0",
+      "x": 137,
+      "y": 50,
+      "z": 110,
+      "rot": 0
+    },
+    {
+      "model": "birch_1",
+      "x": 115,
+      "y": 49,
+      "z": 109,
+      "rot": 3
+    },
+    {
+      "model": "birch_0",
+      "x": 168,
+      "y": 53,
+      "z": 74,
+      "rot": 1
+    },
+    {
+      "model": "birch_0",
+      "x": 418,
+      "y": 51,
+      "z": 107,
+      "rot": 2
+    },
+    {
+      "model": "birch_1",
+      "x": 286,
+      "y": 51,
+      "z": 141,
+      "rot": 1
+    },
+    {
+      "model": "birch_1",
+      "x": 10,
+      "y": 48,
+      "z": 246,
+      "rot": 0
+    },
+    {
+      "model": "birch_sick_0",
+      "x": 270,
+      "y": 53,
+      "z": 119,
+      "rot": 1
+    },
+    {
+      "model": "birch_3",
+      "x": 126,
+      "y": 48,
+      "z": 223,
+      "rot": 0
+    },
+    {
+      "model": "birch_0",
+      "x": 24,
+      "y": 46,
+      "z": 3,
+      "rot": 1
+    },
+    {
+      "model": "birch_1",
+      "x": 76,
+      "y": 49,
+      "z": 130,
+      "rot": 3
+    },
+    {
+      "model": "birch_3",
+      "x": 391,
+      "y": 54,
+      "z": 172,
+      "rot": 0
+    },
+    {
+      "model": "shelf_0",
+      "x": 166,
+      "y": 40,
+      "z": 264,
+      "rot": 3
+    },
+    {
+      "model": "shelf_2",
+      "x": 263,
+      "y": 39,
+      "z": 78,
+      "rot": 2
+    },
+    {
+      "model": "shelf_0",
+      "x": 219,
+      "y": 40,
+      "z": 231,
+      "rot": 3
+    },
+    {
+      "model": "shelf_2",
+      "x": 210,
+      "y": 39,
+      "z": 133,
+      "rot": 3
+    },
+    {
+      "model": "shelf_0",
+      "x": 164,
+      "y": 41,
+      "z": 291,
+      "rot": 0
+    },
+    {
+      "model": "shelf_2",
+      "x": 212,
+      "y": 38,
+      "z": 45,
+      "rot": 2
+    },
+    {
+      "model": "shelf_1",
+      "x": 221,
+      "y": 39,
+      "z": 218,
+      "rot": 2
+    },
+    {
+      "model": "shelf_0",
+      "x": 207,
+      "y": 39,
+      "z": 143,
+      "rot": 1
+    },
+    {
+      "model": "shelf_0",
+      "x": 213,
+      "y": 40,
+      "z": 107,
+      "rot": 3
+    },
+    {
+      "model": "shelf_1",
+      "x": 206,
+      "y": 40,
+      "z": 144,
+      "rot": 0
+    },
+    {
+      "model": "shelf_1",
+      "x": 168,
+      "y": 41,
+      "z": 232,
+      "rot": 1
+    },
+    {
+      "model": "shelf_1",
+      "x": 169,
+      "y": 41,
+      "z": 225,
+      "rot": 2
+    },
+    {
+      "model": "shelf_1",
+      "x": 167,
+      "y": 39,
+      "z": 267,
+      "rot": 2
+    },
+    {
+      "model": "shelf_0",
+      "x": 166,
+      "y": 40,
+      "z": 278,
+      "rot": 0
+    },
+    {
+      "model": "shelf_1",
+      "x": 254,
+      "y": 41,
+      "z": 40,
+      "rot": 1
+    },
+    {
+      "model": "shelf_2",
+      "x": 222,
+      "y": 34,
+      "z": 300,
+      "rot": 1
+    },
+    {
+      "model": "shelf_1",
+      "x": 219,
+      "y": 38,
+      "z": 223,
+      "rot": 3
+    },
+    {
+      "model": "shelf_0",
+      "x": 212,
+      "y": 40,
+      "z": 51,
+      "rot": 1
+    },
+    {
+      "model": "shelf_2",
+      "x": 263,
+      "y": 39,
+      "z": 82,
+      "rot": 2
+    },
+    {
+      "model": "shelf_0",
+      "x": 177,
+      "y": 38,
+      "z": 205,
+      "rot": 2
+    },
+    {
+      "model": "shelf_1",
+      "x": 246,
+      "y": 37,
+      "z": 157,
+      "rot": 2
+    },
+    {
+      "model": "shelf_0",
+      "x": 215,
+      "y": 33,
+      "z": 294,
+      "rot": 3
+    },
+    {
+      "model": "shelf_1",
+      "x": 264,
+      "y": 41,
+      "z": 80,
+      "rot": 2
+    },
+    {
+      "model": "shelf_0",
+      "x": 259,
+      "y": 38,
+      "z": 113,
+      "rot": 2
+    },
+    {
+      "model": "deadwood_1",
+      "x": 421,
+      "y": 51,
+      "z": 197,
+      "rot": 0
+    },
+    {
+      "model": "deadwood_2",
+      "x": 308,
+      "y": 51,
+      "z": 144,
+      "rot": 1
+    },
+    {
+      "model": "deadwood_2",
+      "x": 272,
+      "y": 53,
+      "z": 77,
+      "rot": 1
+    },
+    {
+      "model": "deadwood_2",
+      "x": 157,
+      "y": 51,
+      "z": 138,
+      "rot": 1
+    },
+    {
+      "model": "deadwood_1",
+      "x": 77,
+      "y": 51,
+      "z": 18,
+      "rot": 2
+    },
+    {
+      "model": "deadwood_0",
+      "x": 425,
+      "y": 54,
+      "z": 144,
+      "rot": 3
+    },
+    {
+      "model": "deadwood_2",
+      "x": 328,
+      "y": 53,
+      "z": 104,
+      "rot": 0
+    },
+    {
+      "model": "deadwood_2",
+      "x": 145,
+      "y": 49,
+      "z": 271,
+      "rot": 3
+    },
+    {
+      "model": "deadwood_0",
+      "x": 212,
+      "y": 45,
+      "z": 68,
+      "rot": 3
+    },
+    {
+      "model": "deadwood_0",
+      "x": 107,
+      "y": 50,
+      "z": 142,
+      "rot": 0
+    },
+    {
+      "model": "deadwood_2",
+      "x": 335,
+      "y": 51,
+      "z": 175,
+      "rot": 1
+    },
+    {
+      "model": "deadwood_0",
+      "x": 85,
+      "y": 48,
+      "z": 125,
+      "rot": 1
+    },
+    {
+      "model": "deadwood_0",
+      "x": 46,
+      "y": 47,
+      "z": 132,
+      "rot": 0
+    },
+    {
+      "model": "deadwood_0",
+      "x": 109,
+      "y": 52,
+      "z": 15,
+      "rot": 0
+    },
+    {
+      "model": "deadwood_2",
+      "x": 217,
+      "y": 37,
+      "z": 76,
+      "rot": 2
+    },
+    {
+      "model": "deadwood_2",
+      "x": 244,
+      "y": 48,
+      "z": 232,
+      "rot": 0
+    },
+    {
+      "model": "deadwood_0",
+      "x": 157,
+      "y": 49,
+      "z": 223,
+      "rot": 1
+    },
+    {
+      "model": "deadwood_1",
+      "x": 296,
+      "y": 49,
+      "z": 167,
+      "rot": 0
+    },
+    {
+      "model": "deadwood_2",
+      "x": 445,
+      "y": 53,
+      "z": 7,
+      "rot": 1
+    },
+    {
+      "model": "deadwood_1",
+      "x": 429,
+      "y": 52,
+      "z": 101,
+      "rot": 3
+    },
+    {
+      "model": "deadwood_0",
+      "x": 374,
+      "y": 53,
+      "z": 124,
+      "rot": 3
+    },
+    {
+      "model": "deadwood_2",
+      "x": 360,
+      "y": 55,
+      "z": 66,
+      "rot": 3
+    },
+    {
+      "model": "deadwood_1",
+      "x": 69,
+      "y": 48,
+      "z": 146,
+      "rot": 1
+    },
+    {
+      "model": "deadwood_0",
+      "x": 55,
+      "y": 48,
+      "z": 97,
+      "rot": 2
+    },
+    {
+      "model": "deadwood_0",
+      "x": 320,
+      "y": 56,
+      "z": 20,
+      "rot": 3
+    },
+    {
+      "model": "deadwood_2",
+      "x": 160,
+      "y": 52,
+      "z": 117,
+      "rot": 3
+    },
+    {
+      "model": "deadwood_2",
+      "x": 41,
+      "y": 48,
+      "z": 51,
+      "rot": 0
+    },
+    {
+      "model": "deadwood_0",
+      "x": 413,
+      "y": 47,
+      "z": 237,
+      "rot": 0
+    },
+    {
+      "model": "deadwood_2",
+      "x": 80,
+      "y": 48,
+      "z": 127,
+      "rot": 1
+    },
+    {
+      "model": "deadwood_1",
+      "x": 164,
+      "y": 49,
+      "z": 195,
+      "rot": 0
+    },
+    {
+      "model": "deadwood_2",
+      "x": 197,
+      "y": 54,
+      "z": 68,
+      "rot": 0
+    },
+    {
+      "model": "deadwood_0",
+      "x": 27,
+      "y": 50,
+      "z": 89,
+      "rot": 2
+    },
+    {
+      "model": "deadwood_0",
+      "x": 106,
+      "y": 47,
+      "z": 266,
+      "rot": 0
+    },
+    {
+      "model": "deadwood_0",
+      "x": 95,
+      "y": 47,
+      "z": 102,
+      "rot": 0
+    },
+    {
+      "model": "deadwood_2",
+      "x": 265,
+      "y": 48,
+      "z": 230,
+      "rot": 3
+    },
+    {
+      "model": "deadwood_2",
+      "x": 42,
+      "y": 47,
+      "z": 120,
+      "rot": 3
+    },
+    {
+      "model": "rock_0",
+      "x": 20,
+      "y": 45,
+      "z": 10,
+      "rot": 1
+    },
+    {
+      "model": "rock_0",
+      "x": 130,
+      "y": 31,
+      "z": 326,
+      "rot": 2
+    },
+    {
+      "model": "rock_1",
+      "x": 225,
+      "y": 31,
+      "z": 143,
+      "rot": 0
+    },
+    {
+      "model": "rock_2",
+      "x": 158,
+      "y": 31,
+      "z": 341,
+      "rot": 0
+    },
+    {
+      "model": "rock_1",
+      "x": 31,
+      "y": 47,
+      "z": 274,
+      "rot": 1
+    },
+    {
+      "model": "rock_1",
+      "x": 47,
+      "y": 46,
+      "z": 168,
+      "rot": 0
+    },
+    {
+      "model": "rock_0",
+      "x": 394,
+      "y": 51,
+      "z": 83,
+      "rot": 2
+    },
+    {
+      "model": "rock_1",
+      "x": 18,
+      "y": 46,
+      "z": 207,
+      "rot": 0
+    },
+    {
+      "model": "rock_0",
+      "x": 122,
+      "y": 48,
+      "z": 190,
+      "rot": 3
+    },
+    {
+      "model": "rock_2",
+      "x": 242,
+      "y": 47,
+      "z": 255,
+      "rot": 0
+    },
+    {
+      "model": "rock_1",
+      "x": 382,
+      "y": 31,
+      "z": 310,
+      "rot": 3
+    },
+    {
+      "model": "rock_2",
+      "x": 108,
+      "y": 46,
+      "z": 255,
+      "rot": 0
+    },
+    {
+      "model": "rock_2",
+      "x": 56,
+      "y": 31,
+      "z": 338,
+      "rot": 0
+    },
+    {
+      "model": "rock_2",
+      "x": 71,
+      "y": 46,
+      "z": 237,
+      "rot": 0
+    },
+    {
+      "model": "rock_2",
+      "x": 371,
+      "y": 45,
+      "z": 236,
+      "rot": 2
+    },
+    {
+      "model": "rock_2",
+      "x": 437,
+      "y": 31,
+      "z": 348,
+      "rot": 0
+    },
+    {
+      "model": "rock_2",
+      "x": 330,
+      "y": 43,
+      "z": 280,
+      "rot": 2
+    },
+    {
+      "model": "rock_2",
+      "x": 365,
+      "y": 53,
+      "z": 113,
+      "rot": 2
+    },
+    {
+      "model": "rock_0",
+      "x": 309,
+      "y": 52,
+      "z": 117,
+      "rot": 0
+    },
+    {
+      "model": "rock_2",
+      "x": 60,
+      "y": 46,
+      "z": 130,
+      "rot": 3
+    },
+    {
+      "model": "rock_0",
+      "x": 279,
+      "y": 54,
+      "z": 18,
+      "rot": 0
+    },
+    {
+      "model": "rock_1",
+      "x": 290,
+      "y": 47,
+      "z": 229,
+      "rot": 0
+    },
+    {
+      "model": "rock_2",
+      "x": 211,
+      "y": 31,
+      "z": 193,
+      "rot": 2
+    },
+    {
+      "model": "rock_2",
+      "x": 175,
+      "y": 53,
+      "z": 48,
+      "rot": 1
+    },
+    {
+      "model": "rock_2",
+      "x": 61,
+      "y": 46,
+      "z": 215,
+      "rot": 2
+    },
+    {
+      "model": "rock_1",
+      "x": 125,
+      "y": 48,
+      "z": 186,
+      "rot": 3
+    },
+    {
+      "model": "rock_2",
+      "x": 439,
+      "y": 52,
+      "z": 22,
+      "rot": 0
+    },
+    {
+      "model": "rock_0",
+      "x": 18,
+      "y": 48,
+      "z": 258,
+      "rot": 1
+    },
+    {
+      "model": "rock_2",
+      "x": 405,
+      "y": 45,
+      "z": 246,
+      "rot": 0
+    },
+    {
+      "model": "rock_2",
+      "x": 396,
+      "y": 51,
+      "z": 107,
+      "rot": 1
+    },
+    {
+      "model": "reeds_2",
+      "x": 192,
+      "y": 29,
+      "z": 288,
+      "rot": 3
+    },
+    {
+      "model": "reeds_1",
+      "x": 173,
+      "y": 29,
+      "z": 287,
+      "rot": 2
+    },
+    {
+      "model": "reeds_1",
+      "x": 215,
+      "y": 34,
+      "z": 293,
+      "rot": 1
+    },
+    {
+      "model": "reeds_1",
+      "x": 207,
+      "y": 29,
+      "z": 291,
+      "rot": 3
+    },
+    {
+      "model": "reeds_0",
+      "x": 204,
+      "y": 29,
+      "z": 289,
+      "rot": 1
+    },
+    {
+      "model": "reeds_1",
+      "x": 200,
+      "y": 29,
+      "z": 296,
+      "rot": 2
+    },
+    {
+      "model": "reeds_1",
+      "x": 215,
+      "y": 36,
+      "z": 289,
+      "rot": 0
+    },
+    {
+      "model": "reeds_0",
+      "x": 184,
+      "y": 29,
+      "z": 288,
+      "rot": 2
+    },
+    {
+      "model": "reeds_0",
+      "x": 188,
+      "y": 28,
+      "z": 297,
+      "rot": 1
+    },
+    {
+      "model": "fallen_birch",
+      "x": 195,
+      "y": 41,
+      "z": 128,
+      "rot": 0
+    }
+  ],
+  "hero": {
+    "model": "garrick.vox",
+    "x": 170,
+    "y": 39,
+    "z": 232,
+    "rotation": -0.65
+  }
+}

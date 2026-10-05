@@ -5,11 +5,16 @@ import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass.js'
 import { UnrealBloomPass } from 'three/examples/jsm/postprocessing/UnrealBloomPass.js'
 import { OutputPass } from 'three/examples/jsm/postprocessing/OutputPass.js'
 import { SMAAPass } from 'three/examples/jsm/postprocessing/SMAAPass.js'
-import { buildWorld, WORLD_VOX } from './world'
-import { buildGarrick } from './garrick'
+import { loadScene } from './scene-loader'
+import { makeWater } from './water'
+import { WORLD_VOX } from './gen/common'
 
 /**
  * Fable — visual demo.
+ *
+ * Every asset in this scene is a MagicaVoxel .vox file in public/assets,
+ * assembled from public/assets/scene.json. Run `npm run assets` to regenerate
+ * them, or open any .vox in MagicaVoxel and edit it by hand.
  * Scene 1 of the tutorial campaign: The First Fork, late afternoon.
  * No gameplay. Free camera only: drag to orbit, scroll to zoom, right-drag to pan.
  */
@@ -60,47 +65,39 @@ fill.position.set(10, 8, 30)
 scene.add(fill)
 
 // ------------------------------------------------------------------- world
-const world = buildWorld()
+const status = document.getElementById('loading')
+const say = (s: string) => { if (status) status.textContent = s }
 
-const terrainMat = new THREE.MeshStandardMaterial({
-  vertexColors: true,
-  roughness: 0.96,
-  metalness: 0.0,
-  flatShading: false,
-})
-const terrain = new THREE.Mesh(world.terrain, terrainMat)
-terrain.castShadow = true
-terrain.receiveShadow = true
-scene.add(terrain)
+const terrainMat = new THREE.MeshStandardMaterial({ vertexColors: true, roughness: 0.96, metalness: 0.0 })
+const propMat = new THREE.MeshStandardMaterial({ vertexColors: true, roughness: 0.9, metalness: 0.0 })
+const heroMat = new THREE.MeshStandardMaterial({ vertexColors: true, roughness: 0.62, metalness: 0.22 })
 
-scene.add(world.water)
+say('Loading the wood…')
+const loaded = await loadScene('/assets', { terrain: terrainMat, prop: propMat, hero: heroMat }, say)
+scene.add(loaded.group)
 
-// ----------------------------------------------------------------- Garrick
-const { geometry: garrickGeo } = buildGarrick()
-const heroMat = new THREE.MeshStandardMaterial({
-  vertexColors: true,
-  roughness: 0.62,
-  metalness: 0.22,
-})
-const garrick = new THREE.Mesh(garrickGeo, heroMat)
-garrick.castShadow = true
-garrick.receiveShadow = true
-garrick.position.copy(world.garrickSpot)
-garrick.rotation.y = -0.65 // facing upstream, toward the tributary
-scene.add(garrick)
+const bounds = loaded.manifest.bounds
+const water = makeWater()
+scene.add(water)
 
-// Keep the shadow camera tight around him for crisp contact shadows.
-sun.target.position.copy(world.garrickSpot)
-sun.position.copy(world.garrickSpot).add(SUN_DIR.clone().multiplyScalar(40))
+const garrick = loaded.hero
+const garrickSpot = loaded.heroPosition
+
+console.log(
+  `[fable] ${loaded.stats.triangles.toLocaleString()} triangles, ` +
+  `${loaded.stats.drawCalls} draw calls, ${loaded.manifest.placements.length} placements`,
+)
+
+// Keep the shadow camera tight around Garrick for crisp contact shadows.
+sun.target.position.copy(garrickSpot)
+sun.position.copy(garrickSpot).add(SUN_DIR.clone().multiplyScalar(40))
 
 // Soft contact shadow so he is planted, not floating.
 const contact = new THREE.Mesh(
   new THREE.CircleGeometry(0.55, 24).rotateX(-Math.PI / 2),
-  new THREE.MeshBasicMaterial({
-    color: 0x1a2018, transparent: true, opacity: 0.22, depthWrite: false,
-  }),
+  new THREE.MeshBasicMaterial({ color: 0x1a2018, transparent: true, opacity: 0.22, depthWrite: false }),
 )
-contact.position.copy(world.garrickSpot).add(new THREE.Vector3(0, 0.025, 0))
+contact.position.copy(garrickSpot).add(new THREE.Vector3(0, 0.025, 0))
 scene.add(contact)
 
 // -------------------------------------------------------------------- mist
@@ -131,8 +128,8 @@ function mistTexture(): THREE.Texture {
 const mistLayers: THREE.Mesh[] = []
 {
   const tex = mistTexture()
-  const w = world.bounds.sx * WORLD_VOX
-  const d = world.bounds.sz * WORLD_VOX
+  const w = bounds.sx * WORLD_VOX
+  const d = bounds.sz * WORLD_VOX
   for (let i = 0; i < 3; i++) {
     const mat = new THREE.MeshBasicMaterial({
       map: tex.clone(),
@@ -156,8 +153,8 @@ const mistLayers: THREE.Mesh[] = []
 {
   const count = 700
   const pos = new Float32Array(count * 3)
-  const w = world.bounds.sx * WORLD_VOX
-  const d = world.bounds.sz * WORLD_VOX
+  const w = bounds.sx * WORLD_VOX
+  const d = bounds.sz * WORLD_VOX
   for (let i = 0; i < count; i++) {
     pos[i * 3] = Math.random() * w
     pos[i * 3 + 1] = 0.2 + Math.random() * 3.6
@@ -184,7 +181,7 @@ const mistLayers: THREE.Mesh[] = []
 const controls = new OrbitControls(camera, renderer.domElement)
 controls.enableDamping = true
 controls.dampingFactor = 0.055
-controls.target.copy(world.garrickSpot).add(new THREE.Vector3(0, 0.9, 0))
+controls.target.copy(garrickSpot).add(new THREE.Vector3(0, 0.9, 0))
 controls.minDistance = 0.8
 controls.maxDistance = 26
 controls.maxPolarAngle = Math.PI * 0.495
@@ -192,7 +189,7 @@ controls.autoRotate = true
 controls.autoRotateSpeed = 0.26
 controls.addEventListener('start', () => { controls.autoRotate = false })
 
-camera.position.copy(world.garrickSpot).add(new THREE.Vector3(3.6, 2.4, -4.6))
+camera.position.copy(garrickSpot).add(new THREE.Vector3(3.6, 2.4, -4.6))
 controls.update()
 
 // -------------------------------------------------------------- composer
@@ -216,7 +213,7 @@ function onResize() {
 }
 window.addEventListener('resize', onResize)
 
-const waterMat = world.water.material as THREE.ShaderMaterial
+const waterMat = water.material as THREE.ShaderMaterial
 const motes = (scene.userData as any).motes as THREE.Points
 
 function tick() {
@@ -240,7 +237,7 @@ function tick() {
   p.needsUpdate = true
 
   // Barely-there breathing, so he reads as alive rather than as a prop.
-  garrick.position.y = world.garrickSpot.y + Math.sin(t * 1.1) * 0.006
+  garrick.position.y = garrickSpot.y + Math.sin(t * 1.1) * 0.006
 
   controls.update()
   composer.render()

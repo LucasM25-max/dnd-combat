@@ -1,4 +1,5 @@
 import * as THREE from 'three'
+import type { VoxModel, RGB as VoxRGB } from './vox-format'
 
 /**
  * A dense voxel volume that bakes down to a single triangle mesh.
@@ -19,6 +20,84 @@ export class VoxelVolume {
   private data: Uint16Array
   private palette: RGB[] = []
   private paletteKey = new Map<string, number>()
+
+  /** Wrap a decoded .vox model so it can be meshed. */
+  static fromVox(model: VoxModel, voxelSize: number): VoxelVolume {
+    const v = new VoxelVolume(model.sx, model.sy, model.sz, voxelSize)
+    v.data = model.data
+    v.palette = model.palette as VoxRGB[] as RGB[]
+    return v
+  }
+
+  /** Export for writing to a .vox file. */
+  toVox(): VoxModel {
+    return { sx: this.sx, sy: this.sy, sz: this.sz, data: this.data, palette: this.palette }
+  }
+
+  getPalette(): RGB[] {
+    return this.palette
+  }
+
+  countSolid(): number {
+    let n = 0
+    for (let i = 0; i < this.data.length; i++) if (this.data[i] !== 0) n++
+    return n
+  }
+
+  /**
+   * Remove fully-enclosed voxels. They can never be seen, so dropping them
+   * keeps the .vox files small and MagicaVoxel responsive. Voxels on the
+   * volume boundary are kept so neighbouring chunks still stitch.
+   */
+  hollow(): this {
+    const out = new Uint16Array(this.data.length)
+    for (let y = 0; y < this.sy; y++) {
+      for (let z = 0; z < this.sz; z++) {
+        for (let x = 0; x < this.sx; x++) {
+          const i = this.index(x, y, z)
+          if (this.data[i] === 0) continue
+          const edge = x === 0 || y === 0 || z === 0 ||
+            x === this.sx - 1 || y === this.sy - 1 || z === this.sz - 1
+          const exposed = edge ||
+            !this.solid(x + 1, y, z) || !this.solid(x - 1, y, z) ||
+            !this.solid(x, y + 1, z) || !this.solid(x, y - 1, z) ||
+            !this.solid(x, y, z + 1) || !this.solid(x, y, z - 1)
+          if (exposed) out[i] = this.data[i]
+        }
+      }
+    }
+    this.data = out
+    return this
+  }
+
+  /** Tight bounds of the solid voxels, or null if empty. */
+  extents(): { x0: number; y0: number; z0: number; x1: number; y1: number; z1: number } | null {
+    let x0 = Infinity, y0 = Infinity, z0 = Infinity, x1 = -1, y1 = -1, z1 = -1
+    for (let y = 0; y < this.sy; y++)
+      for (let z = 0; z < this.sz; z++)
+        for (let x = 0; x < this.sx; x++) {
+          if (this.data[this.index(x, y, z)] === 0) continue
+          if (x < x0) x0 = x; if (x > x1) x1 = x
+          if (y < y0) y0 = y; if (y > y1) y1 = y
+          if (z < z0) z0 = z; if (z > z1) z1 = z
+        }
+    return x1 < 0 ? null : { x0, y0, z0, x1, y1, z1 }
+  }
+
+  /** Copy into a new volume cropped to its solid extents. */
+  cropped(): { volume: VoxelVolume; offset: [number, number, number] } {
+    const e = this.extents()
+    if (!e) return { volume: new VoxelVolume(1, 1, 1, this.voxelSize), offset: [0, 0, 0] }
+    const w = e.x1 - e.x0 + 1, h = e.y1 - e.y0 + 1, d = e.z1 - e.z0 + 1
+    const out = new VoxelVolume(w, h, d, this.voxelSize)
+    out.palette = this.palette.slice()
+    out.paletteKey = new Map(this.paletteKey)
+    for (let y = 0; y < h; y++)
+      for (let z = 0; z < d; z++)
+        for (let x = 0; x < w; x++)
+          out.data[out.index(x, y, z)] = this.data[this.index(x + e.x0, y + e.y0, z + e.z0)]
+    return { volume: out, offset: [e.x0, e.y0, e.z0] }
+  }
 
   constructor(sx: number, sy: number, sz: number, voxelSize: number) {
     this.sx = sx
@@ -88,8 +167,16 @@ export class VoxelVolume {
    * Cull hidden faces, bake AO, emit one BufferGeometry.
    * Colours are per-vertex, so there are no textures and no UVs anywhere.
    */
-  build(opts: { shade?: number; origin?: THREE.Vector3 } = {}): THREE.BufferGeometry {
+  build(opts: {
+    shade?: number
+    origin?: THREE.Vector3
+    /** Skip faces that open into an enclosed pocket (hollowed .vox models). */
+    cullInterior?: boolean
+    /** Skip faces on the X/Z/bottom borders, so chunks stitch invisibly. */
+    sealSides?: boolean
+  } = {}): THREE.BufferGeometry {
     const shadeAmount = opts.shade ?? 0.16
+    const exterior = opts.cullInterior ? this.computeExterior() : null
     const s = this.voxelSize
     const ox = opts.origin?.x ?? 0
     const oy = opts.origin?.y ?? 0
@@ -131,7 +218,14 @@ export class VoxelVolume {
 
           for (let f = 0; f < 6; f++) {
             const d = dirs[f]
-            if (this.solid(x + d[0], y + d[1], z + d[2])) continue
+            const nx = x + d[0], ny = y + d[1], nz = z + d[2]
+            if (this.solid(nx, ny, nz)) continue
+            if (!this.inside(nx, ny, nz)) {
+              // Outside the volume: hide side and bottom faces of a chunk.
+              if (opts.sealSides && f !== 2) continue
+            } else if (exterior && exterior[this.index(nx, ny, nz)] === 0) {
+              continue // opens into a sealed interior pocket
+            }
 
             const tint = faceTint[f] * varia
             tmp[0] = base[0] * tint
@@ -174,6 +268,51 @@ export class VoxelVolume {
     geom.setAttribute('color', new THREE.Float32BufferAttribute(colors, 3))
     geom.computeBoundingSphere()
     return geom
+  }
+
+  /**
+   * Flood fill the empty space reachable from the volume boundary.
+   * Anything not reached is an interior pocket — the inside of a hollowed
+   * model — and must not generate faces.
+   */
+  computeExterior(): Uint8Array {
+    const n = this.data.length
+    const mask = new Uint8Array(n)
+    const stack = new Int32Array(n)
+    let sp = 0
+
+    const push = (x: number, y: number, z: number) => {
+      if (!this.inside(x, y, z)) return
+      const i = this.index(x, y, z)
+      if (mask[i] || this.data[i] !== 0) return
+      mask[i] = 1
+      stack[sp++] = i
+    }
+
+    for (let y = 0; y < this.sy; y++)
+      for (let z = 0; z < this.sz; z++) {
+        push(0, y, z); push(this.sx - 1, y, z)
+      }
+    for (let y = 0; y < this.sy; y++)
+      for (let x = 0; x < this.sx; x++) {
+        push(x, y, 0); push(x, y, this.sz - 1)
+      }
+    for (let z = 0; z < this.sz; z++)
+      for (let x = 0; x < this.sx; x++) {
+        push(x, 0, z); push(x, this.sy - 1, z)
+      }
+
+    while (sp > 0) {
+      const i = stack[--sp]
+      const x = i % this.sx
+      const rest = (i - x) / this.sx
+      const z = rest % this.sz
+      const y = (rest - z) / this.sz
+      push(x + 1, y, z); push(x - 1, y, z)
+      push(x, y + 1, z); push(x, y - 1, z)
+      push(x, y, z + 1); push(x, y, z - 1)
+    }
+    return mask
   }
 
   /** Standard 3-neighbour voxel AO: side, side, corner. */
